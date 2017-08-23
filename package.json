@@ -1,0 +1,10 @@
+{
+  "name": "geizhals-monitor",
+  "version": "1.0.0",
+  "description": "Monitor Wishlists from Geizhals",
+  "main": "index.js",
+  "repository": "git@github.com:mscharl/Geizhals-Monitor.git",
+  "author": "Michael Scharl <michael.scharl@me.com>",
+  "license": "MIT",
+  "private": true
+}
