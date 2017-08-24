@@ -8,7 +8,9 @@
   "license": "MIT",
   "private": true,
   "dependencies": {
+    "currency-formatter": "^1.2.1",
     "jsdom": "^11.2.0",
-    "node-fetch": "^1.7.2"
+    "node-fetch": "^1.7.2",
+    "pluralize": "^7.0.0"
   }
 }
