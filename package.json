@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Monitor Wishlists from Geizhals",
   "main": "index.js",
+  "bin": {
+    "gzmonitor": "./cli.js"
+  },
   "repository": "git@github.com:mscharl/Geizhals-Monitor.git",
   "author": "Michael Scharl <michael.scharl@me.com>",
   "license": "MIT",
