@@ -61,16 +61,37 @@ const checkMonitors = () => {
                         headers: {'Content-Type': 'application/json'},
                     }).catch((error) => {
                         console.log(error);
-                    });
+                    }).then(() => info);
                 } else {
                     console.log(`Checked '${monitor.listName}'. Nothing changed`);
                 }
+
+                return info;
+            }).then((info) => {
+                const loggable = [...info.changed, ...info.added];
+                return loggable.reduce((prev_promise, products) => prev_promise.then(() => {
+                    const data = {
+                        value1: products.new.name,
+                        value2: `${products.new.price}`.replace('.', ',')
+                    };
+
+                    return fetch('https://maker.ifttt.com/trigger/geizhals_product_change/with/key/dLpwHp7CaDzkNV_dtk5GN0', {
+                        method: 'POST',
+                        body: JSON.stringify(data),
+                        headers: {'Content-Type': 'application/json'},
+                    }).catch((error) => {
+                        console.log(error);
+                    });
+                }), Promise.resolve());
             });
     });
 };
 const checkInterval = () => {
     setTimeout(() => {
         Promise.all(checkMonitors())
+            .catch((err) => {
+                console.log(err);
+            })
             .then(checkInterval);
     }, refreshInterval);
 };

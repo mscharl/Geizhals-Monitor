@@ -85,6 +85,11 @@ module.exports = class Monitor {
     _fetch() {
         return fetch(this._url)
             .then((response) => response.text());
+        // return new Promise((resolve) => {
+        //     require('fs').readFile('./list.html', (err, data) => {
+        //         resolve(data.toString());
+        //     });
+        // });
     }
 
     _parse(body) {
