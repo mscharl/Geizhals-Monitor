@@ -87,6 +87,7 @@ const checkMonitors = () => {
     });
 };
 const checkInterval = () => {
+    console.log('Checking data in '+config.refreshInterval+'min.');
     setTimeout(() => {
         Promise.all(checkMonitors())
             .catch((err) => {
@@ -97,4 +98,5 @@ const checkInterval = () => {
 };
 
 
+console.log('Monitor Started');
 checkInterval();

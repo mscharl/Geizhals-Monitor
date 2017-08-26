@@ -34,7 +34,10 @@ module.exports = class Monitor {
 
         this._list_name = null;
 
-        this.refreshList();
+        this.refreshList()
+            .then(() => {
+                console.log('Created monitor for: '+this._list_name);
+            });
     }
 
     get products() {
