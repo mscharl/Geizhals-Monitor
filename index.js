@@ -19,6 +19,7 @@ const checkMonitors = () => {
                 const message = [];
                 const oldPrice = info.list.old.totalPrice;
                 const newPrice = info.list.new.totalPrice;
+                const diff = oldPrice - newPrice;
 
                 if (info.changed.length) {
                     const amount = info.changed.length;
@@ -35,7 +36,6 @@ const checkMonitors = () => {
 
                 if (oldPrice !== newPrice) {
                     const price = currencyFormatter.format(newPrice, {code: 'EUR'});
-                    const diff = oldPrice - newPrice;
                     const formattedDiff = currencyFormatter.format(Math.abs(diff), {code: 'EUR'});
 
                     message.push(`Der Gesamtpreis ist um ${formattedDiff} ${diff < 0 ? 'gestiegen' : 'gesunken'} und beträgt jetzt ${price}`);
@@ -55,6 +55,11 @@ const checkMonitors = () => {
                     console.log(data.value1);
                     console.log('');
 
+                    if(diff < (config.threshold || 1)) {
+                        console.log(`Price diff less than '${(config.threshold || 1)}'`);
+                        return info;
+                    }
+
                     return fetch('https://maker.ifttt.com/trigger/geizhals_monitor_change/with/key/dLpwHp7CaDzkNV_dtk5GN0', {
                         method: 'POST',
                         body: JSON.stringify(data),
@@ -72,7 +77,8 @@ const checkMonitors = () => {
                 return loggable.reduce((prev_promise, products) => prev_promise.then(() => {
                     const data = {
                         value1: products.new.name,
-                        value2: `${products.new.price}`.replace('.', ',')
+                        value2: `${products.new.price}`.replace('.', ','),
+                        value3: monitor.listName
                     };
 
                     return fetch('https://maker.ifttt.com/trigger/geizhals_product_change/with/key/dLpwHp7CaDzkNV_dtk5GN0', {
@@ -89,7 +95,15 @@ const checkMonitors = () => {
 const checkInterval = () => {
     console.log('Checking data in '+config.refreshInterval+'min.');
     setTimeout(() => {
-        Promise.all(checkMonitors())
+        Promise.resolve()
+            .then(() => {
+                const now = new Date();
+
+                if(now.getUTCHours() < 6 && now.getUTCHours() > 20) {
+                    return Promise.reject('Outside of office hours');
+                }
+            })
+            .then(() => Promise.all(checkMonitors()))
             .catch((err) => {
                 console.log(err);
             })
